@@ -2,9 +2,15 @@
 session_start();
 require_once 'koneksi.php';
 
+$redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? '';
+if ($redirect !== '' && strpos($redirect, 'mode_baca.php') !== 0) {
+    $redirect = '';
+}
 
 if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin') {
+    if ($redirect !== '') {
+        header('Location: ' . $redirect);
+    } elseif ($_SESSION['role'] === 'admin') {
         header('Location: admin/dashboard.php');
     } else {
         header('Location: user/dashboard.php');
@@ -47,7 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
 
-                if ($user['role'] === 'admin') {
+                if($redirect !== '') {
+                    header('Location: ' . $redirect);
+                } elseif ($user['role'] === 'admin') {
                     header('Location: admin/dashboard.php');
                 } else {
                     header('Location: user/dashboard.php');
@@ -211,7 +219,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Masuk ke akun Stella Library kamu.</p>
     </div>
 
+    <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'wajib_login'): ?>
+        <div class="login-notice">
+            Silahkan login terlebih dahulu untuk membaca isi lengkap e-book.
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="login.php" class="login-form">
+        <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect, ENT_QUOTES, 'UTF-8') ?>">
 
         <label for="username">Username</label>
         <input

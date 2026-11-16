@@ -372,48 +372,63 @@ try {
                             Oleh <?= e($pengarang) ?>
                         </p>
 
+                        <?php
+                        $linkBaca = 'mode_baca.php?id_buku=' .
+                            urlencode((string) $buku['id_buku']);
+                        ?>
+
                         <div class="book-card-footer">
 
                             <span class="stock-info">
                                 Stok: <?= $stok ?>
                             </span>
 
-                            <?php if ($isAdmin): ?>
+                            <div style="display: flex; align-items: center; gap: 8px;">
 
                                 <a
-                                    href="admin/dashboard.php"
-                                    class="book-action"
-                                    title="Kelola buku"
-                                >↗</a>
+                                    href="<?= e($linkBaca) ?>"
+                                    title="Lihat sinopsis & baca e-book"
+                                    style="display: inline-flex; align-items: center; gap: 5px; background: #b58b3b; color: #ffffff; text-decoration: none; padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;"
+                                >Baca</a>
 
-                            <?php elseif ($isLogin && $isAnggota): ?>
-
-                                <?php if ($stok > 0): ?>
+                                <?php if ($isAdmin): ?>
 
                                     <a
-                                        href="<?= e($linkPinjam) ?>"
+                                        href="admin/dashboard.php"
                                         class="book-action"
-                                        title="Ajukan peminjaman"
+                                        title="Kelola buku"
                                     >↗</a>
+
+                                <?php elseif ($isLogin && $isAnggota): ?>
+
+                                    <?php if ($stok > 0): ?>
+
+                                        <a
+                                            href="<?= e($linkPinjam) ?>"
+                                            class="book-action"
+                                            title="Ajukan peminjaman"
+                                        >↗</a>
+
+                                    <?php else: ?>
+
+                                        <span
+                                            class="book-action disabled"
+                                            title="Stok habis"
+                                        >×</span>
+
+                                    <?php endif; ?>
 
                                 <?php else: ?>
 
-                                    <span
-                                        class="book-action disabled"
-                                        title="Stok habis"
-                                    >×</span>
+                                    <a
+                                        href="login.php?redirect=<?= urlencode($linkPinjam) ?>"
+                                        class="book-action"
+                                        title="Login untuk meminjam"
+                                    >↗</a>
 
                                 <?php endif; ?>
 
-                            <?php else: ?>
-
-                                <a
-                                    href="login.php?redirect=<?= urlencode($linkPinjam) ?>"
-                                    class="book-action"
-                                    title="Login untuk meminjam"
-                                >↗</a>
-
-                            <?php endif; ?>
+                            </div>
 
                         </div>
 
